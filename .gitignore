@@ -1,3 +1,4 @@
+data/
 # pdflatex output
 *.tex.aux
 *.tex.out
