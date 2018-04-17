@@ -10,6 +10,9 @@
 # created: MAR 2018
 ##
 
+all:
+	pdflatex main
+
 report:
 	python3 src/apps_by_yr.py
 	python3 src/gen_report.py docs/milestone.tex.tmpl -o milestone.tex
