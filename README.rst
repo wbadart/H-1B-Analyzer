@@ -136,7 +136,7 @@ something other than this provided). For example:
     import matplotlib.pyplot as plt
     import numpy as np
     from h1b.cluster import cluster
-    
+
     data = np.random.random((1000, 2))
     clustering = cluster('KMeans', 3, data)
     plt.scatter(data[:, 0], data[:, 1], c=clustering)
@@ -151,7 +151,7 @@ something other than this provided). For example:
 
 
 
-.. image:: output_6_1.png
+.. image:: docs/images/output_6_1.png
 
 
 For this project, the input to the clustering was the set of job titles
@@ -172,7 +172,7 @@ similar to the example provided below:
 
     from sklearn.feature_extraction.text import CountVectorizer
     from sklearn.decomposition import TruncatedSVD
-    
+
     data = ['CHIEF EXECUTIVE', 'SOFTWARE ENGINEER']
     vec = CountVectorizer().fit_transform(data)
     svd = TruncatedSVD().fit_transform(vec)
