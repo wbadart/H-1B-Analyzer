@@ -13,7 +13,7 @@ from sklearn.cluster import AgglomerativeClustering, KMeans, SpectralClustering
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import TruncatedSVD
 
-N_CLUSTERS = 12
+N_CLUSTERS = 12 - 4
 COLORS = np.random.random((N_CLUSTERS, 3))
 
 
@@ -42,7 +42,7 @@ def main():
 
     vec = CountVectorizer(tokenizer=word_tokenize).fit_transform(data)
     svd = TruncatedSVD().fit_transform(vec)
-    fig, axes = plt.subplots(2, 5)
+    fig, axes = plt.subplots(2, 3)
     fig.subplots_adjust(wspace=1)
 
     for i, ax in enumerate(np.array(axes).flatten()):
@@ -62,10 +62,14 @@ def main():
             ax.scatter(t[:, 0], t[:, 1], c=COLORS[c],
                        label=', '.join(w for w, _ in wc.most_common(3)))
 
-        ax.legend(loc='lower center', bbox_to_anchor=(0.0, -0.3))
+        ax.set_title(f'{N_CLUSTERS - i} Clusters')
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        # ax.legend(loc='lower center', bbox_to_anchor=(0.0, -0.3))
 
     # plt.title('Clustering of %d Job Titles' % len(data))
-    plt.show()
+    # plt.show()
+    plt.savefig('clustering.png')
 
 
 if __name__ == '__main__':

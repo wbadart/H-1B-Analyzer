@@ -1,14 +1,16 @@
 \documentclass[sigconf]{acmart}
+\usepackage{graphicx}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
 
 \usepackage{booktabs} % For formal tables
-\usepackage{graphicx}
 
 \begin{document}
 \title{Determining Predictors of H-1B Salary and Approval}
 \subtitle{Milestone Report}
 
 
-\author{Wenhao (Elvis) Yu}
+\author{Wenhao Yu}
 \affiliation{%
   \institution{University of Notre Dame}
   \city{South Bend}
@@ -111,17 +113,18 @@ with external research and program evaluation\footnote{Please follow
 \href{https://www.foreignlaborcert.doleta.gov/pdf/OFLC_Annual_Report_FY2016.pdf}{https://www.foreignlaborcert.doleta.gov/pdf/OFLC\_Annual\_Report\_FY2016.pdf}}.
 \end{enumerate}
 
+
 \begin{figure}[htbp]
   \centering
-  \caption{Handwrite}\label{fig:digit}
-  \epsfig{figure=/Users/yuwenhao/Desktop/distribution.jpg,height=500}
+  \includegraphics[scale=.4]{figure1.png}
+  \caption{Salary Distribution}\label{fig:digit}
 \end{figure}
 
 \subsection{Data Summary}
 This subsection presents a preliminary description of dataset (1), the Kaggle dataset described in section
 5.1 Datasets.
 
-Figure 1 shows the salary distribution.There are 5 Outliers in the original data. The average of salary is 72,221, the median of salary is 66,602, and the standard deviation is 247,04.
+Figure 1 shows the salary distribution.There are 5 Outliers in the original data. The average of salary is 72,221, the median of salary is 66,602, and the standard deviation is 24,704.
 
 Table 1 shows the frequency of each value of the CASE\_STATUS feature, the column which labels whether
 an application was approved.
@@ -130,7 +133,7 @@ an application was approved.
 The CASE\_STATUS field denotes the status of the application after LCA processing. Certified applications are filed with USCIS for H-1B approval. CASE\_STATUS: CERTIFIED does not mean the applicant got his/her H-1B visa approved, it just means that he/she is eligible to file an H-1B.
 \end{quote}
 
-\begin{table}
+\begin{table}[h]
 	\caption{Approval Status Classes}
     \begin{tabular}{l l}
         Class Name &Frequency \\
@@ -141,7 +144,7 @@ The CASE\_STATUS field denotes the status of the application after LCA processin
     \end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[h]
 	\caption{Salary Classes}
     \begin{tabular}{l l l}
         Class Name&Frequency&Range \\
@@ -154,6 +157,7 @@ The CASE\_STATUS field denotes the status of the application after LCA processin
         %GENTABLE
     \end{tabular}
 \end{table}
+
 
 Table 1 shows that most H-1B applications are certified (note: this does not mean they are accepted). We
 also chose to examine the change in volume in H-1B applications over time.
@@ -168,8 +172,73 @@ About the approval status classification, we use four features:EMPLOYER, JOB TIT
 About the salary level classification, we use three features:EMPLOYER, JOB TITLE, LOCATION and the label is SALARY, which has five categories:VERY HIGH, HIGH, MIDDLE, LOW,VERY LOW.
 \subsection{Evaluation Results}
 
+\begin{table}[h]
+    \caption{Naive Bayes Confusion Matrix for Approval}
+    \centering
+    \begin{tabular}{c| c |c}
+        &Predicted Approved&Predicted Denied\\
+        \hline
+        Approved& 888435& 25814\\
+        Denied  & 98423 & 35901\\
+        %GENTABLE
+    \end{tabular}
+\end{table}
+
+Accuracy: 0.91409770402 \qquad Specificity:0.26727167
+
+
+\begin{table}[h]
+    \caption{Decision Tree Confusion Matrix for Approval}
+    \centering
+    \begin{tabular}{c| c |c}
+        &Predicted Approved&Predicted Denied\\
+        \hline
+        Approved& 905932& 8317\\
+        Denied  & 81756 & 52568\\
+        %GENTABLE
+    \end{tabular}
+\end{table}
+
+Accuracy: 0.881516343609 \qquad Specificity:0.3913522
+
+\begin{table}[h]
+    \caption{Naive Bayes Salary Prediction Accuracy}
+    \centering
+    \begin{tabular}{l | l | l}
+        Class & Correct & Wrong \\
+        \hline
+         Very High& 58282 &31722 \\
+         High     & 93270 &88956 \\
+         Middle   & 276983&84862 \\
+         Low      & 96456 &85198 \\
+         Very Low & 71492 &27063 \\
+         \hline
+         Total Accuracy & 65.2%
+         %GENTABLE
+    \end{tabular}
+    \label{tab:my_label}
+\end{table}
+
+\begin{table}[h]
+    \caption{Decision Tree Salary Prediction Accuracy}
+    \centering
+    \begin{tabular}{l | l | l}
+        Class & Correct & Wrong \\
+        \hline
+         Very High& 67667 &22337 \\
+         High     & 137068&45158 \\
+         Middle   & 317643&44202 \\
+         Low      & 151558&30090 \\
+         Very Low & 95306 &3222 \\
+         \hline
+         Total Accuracy & 84.1%
+         %GENTABLE
+    \end{tabular}
+    \label{tab:my_label}
+\end{table}
 
 \section{Conclusions}
+
 \section*{Reference} 
 [1]  The-Morgan-Kaufmann-Series-in-Data-Management-Systems-Jiawei-Han-Micheline-Kamber-Jian-Pei-Data-Mining.-Concepts-and-Techniques-3rd-Edition-Morgan-Kaufmann-2011-3
 
