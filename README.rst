@@ -31,6 +31,12 @@ This will also add the project’s several entry points to your path, for
 running the individual analyses directly from the command line (see
 `Usage <#Usage>`__).
 
+To uninstall, run:
+
+::
+
+    $ pip3 uninstall h1b
+
 Generating the Report
 ---------------------
 
@@ -51,7 +57,30 @@ Otherwise, the complete compiled report is already checked into the
 repository as
 ```docs/Determining Predictors of H-1B Salary and Approval.pdf`` <./docs/Determining%20Predictors%20of%20H-1B%20Salary%20and%20Approval.pdf>`__.
 
+Acquiring the Datasets
+----------------------
+
+All the data used from this project is available for free from the Web
+(see the `final
+report <./docs/Determining%20Predictors%20of%20H-1B%20Salary%20and%20Approval.pdf>`__,
+section 5.1 Datasets). It has been collected, archived, and been made
+available as a bundle at
+`wbadart.info/data.tar.gz <https://wbadart.info/data.tar.gz>`__.
+
+::
+
+    $ wget wbadart.info/data.tar.gz
+    ...
+    $ tar xzf data.tar.gz
+
+This will unpack the ``data/`` folder into the current directory. Within
+it will lie all of the pertinent data files expected by the various
+scripts.
+
 Usage
 -----
 
-WIP
+All the scripts exposed by this project will read the environment
+variable ``H1B_DATA`` to locate the data files described above. Please
+ensure it is set and accurate before attempting to run any of the
+scripts.

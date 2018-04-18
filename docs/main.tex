@@ -51,30 +51,28 @@ years. Last year, in 2017, almost 350,000 foreign workers applied for the progra
 200,000 were approved.
 
 To decide which of the many applicants are awarded one of the limited number of approvals, The US
-Citizenship and Immigration Services (USCIS) conducts an annual lottery.
-The H-1B lottery is a laborious and complex process for both large companies bringing in
-thousands of migrant employees and small ones onboarding only a couple. A tool which
-highlights the important features that support H-1B approvals could be a vital strategic asset for
-these companies. Lots of data exists in this domain, but to integrate it and perform meaningful
-analysis is beyond the capabilities of companies without established data science practices.
-We plan to produce a model that shows what features are most valuable in regards to H-1B
-workers’ salaries and approval.
+Citizenship and Immigration Services (USCIS) conducts an annual lottery. The H-1B lottery is a
+laborious and complex process for both large companies bringing in thousands of migrant employees
+and small ones onboarding only a couple. A tool which highlights the important features that support
+H-1B approvals could be a vital strategic asset for these companies. Lots of data exists in this
+domain, but to integrate it and perform meaningful analysis is beyond the capabilities of companies
+without established data science practices. We plan to produce a model that shows what features are
+most valuable in regards to H-1B workers’ salaries and approval.
 
 
 \section{Related Work}
 
 In April of 2017, Glassdoor published an article analyzing the salaries of H-1B immigrants and
-comparing them to those of domestic workers in similar roles and fields. While the report does
-not attempt to model H-1B workers’ salaries based on other features, it offers a comprehensive
-statistical analysis of their pay.
-\footnote{\href{https://www.glassdoor.com/research/h1b-workers/}{Glassdoor Comparison on H-1B Visa Salaries vs US Workers}}
+comparing them to those of domestic workers in similar roles and fields. While the report does not
+attempt to model H-1B workers’ salaries based on other features, it offers a comprehensive
+statistical analysis of their pay.\footnote{\href{https://www.glassdoor.com/research/h1b-workers/}{Glassdoor Comparison on H-1B Visa Salaries vs US Workers}}
 
 
 \section{Problem Definition}
 
-How can we predict the approval status of a given H-1B via application? What tangential
-analyses provide tangible business value for companies sponsoring H-1B visas? How would the salary
-range change based on a given occupation?
+How can we predict the approval status of a given H-1B via application? What tangential analyses
+provide tangible business value for companies sponsoring H-1B visas? How would the salary range
+change based on a given occupation?
 
 
 \section{Proposed Methodology}
@@ -155,7 +153,6 @@ stratified sampling in the partitioning of testing and trainging subsets.
         \hline
         CERTIFIED&914,251 \\
         NON-CERTIFIED&134,325
-        %GENTABLE
     \end{tabular}
 \end{table}
 
@@ -172,7 +169,6 @@ accepted). We also chose to examine the change in volume in H-1B applications ov
         Middle   & 361,845  & [59155,79331)\\
         Low      & 181,648  & [28963,59155)\\
         Very Low & 98,528   & [12584,28963)\\
-        %GENTABLE
     \end{tabular}
 \end{table}
 
@@ -233,7 +229,6 @@ according to job position information.
         \hline
         Approved& 888435& 25814\\
         Denied  & 98423 & 35901\\
-        %GENTABLE
     \end{tabular}
 \end{table}
 
@@ -248,7 +243,6 @@ Accuracy: 0.91409770402 \qquad Specificity:0.26727167
         \hline
         Approved& 905932& 8317\\
         Denied  & 81756 & 52568\\
-        %GENTABLE
     \end{tabular}
 \end{table}
 
@@ -267,7 +261,6 @@ Accuracy: 0.881516343609 \qquad Specificity:0.3913522
          Very Low & 71492 &27063 \\
          \hline
          Total Accuracy & 65.2%
-         %GENTABLE
     \end{tabular}
     \label{tab:my_label}
 \end{table}
@@ -285,7 +278,6 @@ Accuracy: 0.881516343609 \qquad Specificity:0.3913522
          Very Low & 95306 &3222 \\
          \hline
          Total Accuracy & 84.1%
-         %GENTABLE
     \end{tabular}
     \label{tab:my_label}
 \end{table}
@@ -300,3 +292,4 @@ Accuracy: 0.881516343609 \qquad Specificity:0.3913522
 \bibliography{sample-bibliography}
 
 \end{document}
+% vim: colorcolumn=100:tw=100

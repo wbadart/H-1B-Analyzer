@@ -22,4 +22,10 @@ setup(name='h1b',
           'numpy',
           'pandas',
           'sklearn',
-      ])
+      ],
+
+      entry_points={
+          'console_scripts': [
+              'h1b.cluster = h1b.cluster:main'
+          ],
+      })
