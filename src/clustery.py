@@ -9,7 +9,7 @@ from pprint import pprint
 from wbutil import lmap
 
 from nltk.tokenize import word_tokenize
-from sklearn.cluster import KMeans, SpectralClustering
+from sklearn.cluster import AgglomerativeClustering, KMeans, SpectralClustering
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import TruncatedSVD
 
@@ -46,7 +46,7 @@ def main():
     fig.subplots_adjust(wspace=1)
 
     for i, ax in enumerate(np.array(axes).flatten()):
-        clustering = SpectralClustering(
+        clustering = AgglomerativeClustering(
             n_clusters=N_CLUSTERS - i).fit_predict(svd)
         labeled = np.append(svd, clustering.reshape(len(data), 1), axis=1)
 
