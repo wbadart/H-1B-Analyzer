@@ -28,11 +28,6 @@ ALGS = {
 N_CLUSTERS = 8
 
 
-def wordcount(title_set):
-    return Counter(
-        w for title in title_set for w in word_tokenize(title) if w.isalpha())
-
-
 def cluster(algname, n_clusters, data):
     '''
     Produce a clustering of the data according to the algorithm's `fit_predict'
@@ -42,6 +37,21 @@ def cluster(algname, n_clusters, data):
         raise RuntimeError(
             'invalid algname %r. Must be one of %r' % (algname, ALGS))
     return ALGS[algname](n_clusters=n_clusters).fit_predict(data)
+
+
+def cluster_keywords(clustering, data):
+    '''
+    Count the occurrences of job title keywords in each cluster.
+    '''
+    clusters = defaultdict(set)
+    for c, job_title in zip(clustering, data):
+        clusters[c].add(job_title)
+    return clusters
+
+
+def wordcount(title_set):
+    return Counter(
+        w for title in title_set for w in word_tokenize(title) if w.isalpha())
 
 
 def main():
@@ -55,6 +65,9 @@ def main():
     parser.add_argument('-f', '--file', default=PRIMARY,
                         help='location of dataset w/in data directory '
                         '(default:{})'.format(PRIMARY))
+    parser.add_argument('-o', metavar='OUTPUT',
+                        help='plot output file (if unset, do not plot, '
+                        'just print clusterings)')
     args = parser.parse_args()
     colors = np.random.random((args.n, 3))
 
@@ -72,13 +85,10 @@ def main():
         clustering = cluster(args.alg, N_CLUSTERS - i, svd)
         labeled = np.append(svd, clustering.reshape(len(data), 1), axis=1)
 
-        clusters = defaultdict(set)
-        for c, job_title in zip(clustering, data):
-            clusters[c].add(job_title)
-        pprint(clusters)
+        for c, titles in cluster_keywords(clustering, data).items():
+            if not args.o:
+                print('{}: {!r}'.format(c, titles))
 
-        for c, titles in clusters.items():
-            # others = set(data) - titles
             wc = wordcount(titles)
             t = labeled[labeled[:, 2] == c]
             ax.scatter(t[:, 0], t[:, 1], c=colors[c],
@@ -87,11 +97,9 @@ def main():
         ax.set_title(f'{N_CLUSTERS - i} Clusters')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
-        # ax.legend(loc='lower center', bbox_to_anchor=(0.0, -0.3))
 
-    # plt.title('Clustering of %d Job Titles' % len(data))
-    # plt.show()
-    plt.savefig('clustering.png')
+    if args.o:
+        plt.savefig(args.o)
 
 
 if __name__ == '__main__':
