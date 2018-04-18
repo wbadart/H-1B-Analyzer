@@ -27,9 +27,10 @@ run:
 
     $ pip3 install git+https://github.com/wbadart/H-1B-Analyzer.git
 
-This will also add the project’s several entry points to your path, for
-running the individual analyses directly from the command line (see
-`Usage <#Usage>`__).
+(Remember the ``--user`` flag for systems on which you don’t have
+administrative privileges.) This will also add the project’s several
+entry points to your path, for running the individual analyses directly
+from the command line (see `Usage <#Usage>`__).
 
 To uninstall, run:
 
@@ -81,6 +82,66 @@ Usage
 -----
 
 All the scripts exposed by this project will read the environment
-variable ``H1B_DATA`` to locate the data files described above. Please
-ensure it is set and accurate before attempting to run any of the
-scripts.
+variable ``H1B_DATA`` to locate the data files described
+`above <#Acquiring-the-Datasets>`__. Please ensure it is set and
+accurate before attempting to run any of the scripts.
+
+Job Title Clustering
+~~~~~~~~~~~~~~~~~~~~
+
+The submodule ``h1b.cluster`` provides a couple of utilities for
+clustering the set of job titles within the primary dataset. It also
+exposes a main execution, made available on the ``PATH`` as
+``h1b.cluster``; it can be run as a script as follows:
+
+::
+
+    $ h1b.cluster --help
+    usage: h1b.cluster [-h] [-n CLUSTERS]
+                       [--alg {AgglomerativeClustering,KMeans,SpectralClustering}]
+                       [-f FILE]
+
+    h1b/cluster.py Find clusterings of the many thousands of job titles within the
+    dataset. created: APR 2018
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -n CLUSTERS, --clusters CLUSTERS
+                            number of clusters (default:8)
+      --alg {AgglomerativeClustering,KMeans,SpectralClustering}
+                            clustering algorithm to run (default:KMeans)
+      -f FILE, --file FILE  location of dataset w/in data directory
+                            (default:h1b_kaggle.csv)
+
+The most important function this module exports is called ``cluster``.
+
+::
+
+    $ pydoc h1b.cluster.cluster
+    Help on function cluster in h1b.cluster:
+
+    h1b.cluster.cluster = cluster(algname, n_clusters, data)
+        Produce a clustering of the data according to the algorithm's `fit_predict'
+        method and the `n_clusters' parameter.
+
+Given the name of a clustering algorithm (must be one of
+``AgglomerativeClustering``, ``KMeans``, and ``SpectralClustering``, but
+could be easily expanded to include any clustering algorithm where the
+number of clusters is fixed as a parameter; raises ``RuntimeError`` if
+something other than this provided). For example:
+
+.. code:: ipython3
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from h1b.cluster import cluster
+
+    data = np.random.random((1000, 2))
+    clustering = cluster('KMeans', 3, data)
+    plt.scatter(data[:, 0], data[:, 1], c=clustering)
+    plt.show()
+
+
+
+.. image:: docs/images/output_6_0.png
+
