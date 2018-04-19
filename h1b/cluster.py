@@ -55,9 +55,8 @@ def cluster_strings(algname, n_clusters, data):
     '''
     c = CountVectorizer(tokenizer=word_tokenize).fit(
         np.random.choice(data, min(len(data), 20000)))
-    vec = c.transform(data)
-    svd = TruncatedSVD().fit_transform(vec)
-    return cluster(algname, n_clusters, svd)
+    svd = TruncatedSVD().fit_transform(c.transform(data))
+    return svd, cluster(algname, n_clusters, svd)
 
 
 def wordcount(title_set):

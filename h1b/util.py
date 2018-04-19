@@ -8,8 +8,9 @@ created: APR 2018
 '''
 
 import pandas as pd
-from pathlib import Path
 from os import environ as env
+from pathlib import Path
+from time import time
 
 CATEGORICAL_COLUMNS = {
     'CASE_STATUS', 'EMPLOYER_NAME', 'SOC_NAME', 'JOB_TITLE', 'WORKSITE'}
@@ -34,3 +35,21 @@ def load_dataframe(fname=PRIMARY):
         df[categorical] = df[categorical].astype('category')
     df.FULL_TIME_POSITION = df.FULL_TIME_POSITION == 'Y'
     return df
+
+
+class Timer(object):
+    '''
+    '''
+    def __init__(self):
+        self._start = None
+        self._end = None
+
+    def __enter__(self):
+        self._start = time()
+        return self
+
+    def __exit__(self, *args):
+        self._end = time()
+
+    def __str__(self):
+        return '{:,.3f}'.format(self._end - self._start)
