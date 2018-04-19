@@ -49,6 +49,17 @@ def cluster_keywords(clustering, data):
     return clusters
 
 
+def cluster_strings(algname, n_clusters, data):
+    '''
+    Performing the clustering, including the vectorization step of the process.
+    '''
+    c = CountVectorizer(tokenizer=word_tokenize).fit(
+        np.random.choice(data, min(len(data), 20000)))
+    vec = c.transform(data)
+    svd = TruncatedSVD().fit_transform(vec)
+    return cluster(algname, n_clusters, svd)
+
+
 def wordcount(title_set):
     return Counter(
         w for title in title_set for w in word_tokenize(title) if w.isalpha())
