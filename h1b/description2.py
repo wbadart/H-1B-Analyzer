@@ -10,7 +10,7 @@ created: MAR 2018
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from .util import datapath, PRIMARY
+from .util import load_dataframe, PRIMARY
 
 SEP = '=' * 20
 
@@ -45,7 +45,7 @@ def main():
     parser.add_argument('--allplots', action='store_true',
                         help='generate all plots (overrides -p)')
     args = parser.parse_args()
-    df = pd.read_csv(datapath(args.file)).drop(['Unnamed: 0'], axis=1)
+    df = load_dataframe(args.file)
 
     # =========
     # Do stats
