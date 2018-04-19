@@ -136,7 +136,7 @@ plt.scatter(data[:, 0], data[:, 1], c=clustering)
 
 
 
-    <matplotlib.collections.PathCollection at 0x7f300e066dd8>
+    <matplotlib.collections.PathCollection at 0x7f2890063e10>
 
 
 
@@ -160,13 +160,15 @@ data = ['CHIEF EXECUTIVE OFFICER', 'CHIEF FINANCIAL OFFICER',
         'DATA ENGINEER', 'SOFTWARE ENGINEER']
 
 svd, clustering = cluster_strings('KMeans', 2, data)
+plt.annotate(' CEO', xy=svd[0])
+plt.annotate(' SW ENG', xy=svd[-1])
 plt.scatter(svd[:, 0], svd[:, 1], c=clustering)
 ```
 
 
 
 
-    <matplotlib.collections.PathCollection at 0x7f300c65a710>
+    <matplotlib.collections.PathCollection at 0x7f288e655e48>
 
 
 
