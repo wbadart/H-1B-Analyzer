@@ -141,7 +141,7 @@ plt.scatter(data[:, 0], data[:, 1], c=clustering)
 
 
 
-![png](docs/images/output_7_1.png)
+![png](output_7_1.png)
 
 
 For this project, the input to the clustering was the set of job titles from the dataset, but a simple list of strings is invlaid input to the clustering algorithms. To solve this, we vectorized the job titles, transforming the list of strings into a sparse matrix of word counts. This structure is very high dimensional (`N_DIM == len(VOCAB)`) which
@@ -174,5 +174,24 @@ plt.scatter(svd[:, 0], svd[:, 1], c=colors)
 
 
 
-![png](docs/images/output_9_1.png)
+![png](output_9_1.png)
 
+
+### Classify
+
+The primary data science task we undertook was to classify the certification status of H-1B applications, as a means of informing businesses about important considerations when sponsoring H-1B visas. This functionality is provided by the `h1b.classify` submodule, invokable from the command line as such:
+
+```
+$ h1b.classify --help
+usage: h1b.classify [-h] [-f FILE]
+
+h1b/classify.py Predict the CASE_STATUS of applications from the primary
+dataset. created: MAR 2018
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  location of dataset w/in data directory
+                        (default:h1b_kaggle.csv)
+```
+
+When run, this program trains a few classifiers (namely, `GaussianNB`, `DecisionTreeClassifier`, and `MLPClassifier`, provided by scikit-learn) and checks their performance over a non-overlapping test subset of the data.
