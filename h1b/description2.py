@@ -14,8 +14,8 @@ from .util import datapath, PRIMARY
 
 SEP = '=' * 20
 
-PLOTS = ['employers', 'salary']
-STATS = ['totals', 'salary', 'employers', 'positions']
+PLOTS = ['employers', 'salary', 'year']
+STATS = ['totals', 'salary', 'employers', 'positions', 'year']
 
 pd.options.display.float_format = '{:,.2f}'.format
 
@@ -41,9 +41,9 @@ def main():
     parser.add_argument('-p', '--plots', choices=PLOTS, nargs='+', default=[],
                         help='plots to generate')
     parser.add_argument('--allstats', action='store_true',
-                        help='generate all statistics')
+                        help='generate all statistics (overrides -s)')
     parser.add_argument('--allplots', action='store_true',
-                        help='generate all plots')
+                        help='generate all plots (overrides -p)')
     args = parser.parse_args()
     df = pd.read_csv(datapath(args.file)).drop(['Unnamed: 0'], axis=1)
 
@@ -75,6 +75,12 @@ def main():
     if 'positions' in args.stats or args.allstats:
         print('TOP JOB TITLES:')
         print(df.JOB_TITLE.value_counts().sort_values(ascending=False).head(5))
+        print(SEP)
+
+    if 'year' in args.stats or args.allstats:
+        print('APPLICATIONS BY YEAR:')
+        print(df.YEAR.value_counts())
+        print(SEP)
 
     # =========
     # Do plots
@@ -93,6 +99,10 @@ def main():
     if 'salary' in args.plots or args.allplots:
         plt.title('Overall Distribution of Salaries')
         reject_outliers(df.PREVAILING_WAGE.dropna()).hist(bins=20)
+        plt.show()
+
+    if 'year' in args.plots or args.allplots:
+        df.YEAR.value_counts().plot(kind='bar')
         plt.show()
 
 
