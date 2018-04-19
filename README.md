@@ -141,7 +141,7 @@ plt.scatter(data[:, 0], data[:, 1], c=clustering)
 
 
 
-![png](output_7_1.png)
+![png](docs/images/output_7_1.png)
 
 
 For this project, the input to the clustering was the set of job titles from the dataset, but a simple list of strings is invlaid input to the clustering algorithms. To solve this, we vectorized the job titles, transforming the list of strings into a sparse matrix of word counts. This structure is very high dimensional (`N_DIM == len(VOCAB)`) which
@@ -174,7 +174,7 @@ plt.scatter(svd[:, 0], svd[:, 1], c=colors)
 
 
 
-![png](output_9_1.png)
+![png](docs/images/output_9_1.png)
 
 
 ### Classify
