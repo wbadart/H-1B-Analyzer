@@ -29,7 +29,7 @@ def load_dataframe(fname=PRIMARY):
     Load the primary dataset into a DataFrame, format the individual Series
     according to domain knowledge, and return the frame.
     '''
-    df = pd.read_csv(datapath(fname))
+    df = pd.read_csv(datapath(fname)).drop(['Unnamed: 0'], axis=1)
     for categorical in CATEGORICAL_COLUMNS:
         df[categorical] = df[categorical].astype('category')
     df.FULL_TIME_POSITION = df.FULL_TIME_POSITION == 'Y'
