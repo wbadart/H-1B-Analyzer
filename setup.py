@@ -9,6 +9,8 @@ from setuptools import setup, find_packages
 
 
 setup(name='h1b',
+      author='Wenhao Yu, Luke Duane, Will Badart',
+      author_email='wyu1@nd.edu, lduane@nd.edu, wbadart@nd.edu',
       version='1.0.0',
       packages=find_packages(),
       url='https://github.com/wbadart/H-1B-Analyzer',
@@ -28,5 +30,6 @@ setup(name='h1b',
           'console_scripts': [
               'h1b.cluster = h1b.cluster:main',
               'h1b.describe = h1b.description2:main',
+              'h1b.classify = h1b.classify:main',
           ],
       })
