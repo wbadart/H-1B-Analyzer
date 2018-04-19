@@ -136,7 +136,7 @@ plt.scatter(data[:, 0], data[:, 1], c=clustering)
 
 
 
-    <matplotlib.collections.PathCollection at 0x7f1cc36d1ba8>
+    <matplotlib.collections.PathCollection at 0x7f300e066dd8>
 
 
 
@@ -149,27 +149,24 @@ For this project, the input to the clustering was the set of job titles from the
 1. caused a serious slow down in clustering (particularly in `SpectralClustering`)
 2. meant it could not be plotted in 2D space
 
-To remedy these, we performed a dimensionality reduction through *SVD*, in a similar fashion to the toy example provided below:
+To remedy these, we performed a dimensionality reduction through *SVD*, in a similar fashion to the toy example below. This pipeline is encapsulated in the `cluster_strings` function.
 
 
 ```python
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import TruncatedSVD
+from h1b.cluster import cluster_strings
 
 data = ['CHIEF EXECUTIVE OFFICER', 'CHIEF FINANCIAL OFFICER',
         'IT MANAGER', 'MARKETING MANAGER',
         'DATA ENGINEER', 'SOFTWARE ENGINEER']
 
-colors = np.random.random((len(data), 3))
-vec = CountVectorizer().fit_transform(data)
-svd = TruncatedSVD().fit_transform(vec)
-plt.scatter(svd[:, 0], svd[:, 1], c=colors)
+svd, clustering = cluster_strings('KMeans', 2, data)
+plt.scatter(svd[:, 0], svd[:, 1], c=clustering)
 ```
 
 
 
 
-    <matplotlib.collections.PathCollection at 0x7f1cc1e0ca90>
+    <matplotlib.collections.PathCollection at 0x7f300c65a710>
 
 
 
@@ -183,15 +180,44 @@ The primary data science task we undertook was to classify the certification sta
 
 ```
 $ h1b.classify --help
-usage: h1b.classify [-h] [-f FILE]
+usage: h1b.classify [-h] [-m {GaussianNB,DecisionTreeClassifier}] [-f FILE]
 
 h1b/classify.py Predict the CASE_STATUS of applications from the primary
 dataset. created: MAR 2018
 
 optional arguments:
   -h, --help            show this help message and exit
+  -m {GaussianNB,DecisionTreeClassifier}, --models {GaussianNB,DecisionTreeClassifier}
+                        models to run over the data (default:all)
   -f FILE, --file FILE  location of dataset w/in data directory
                         (default:h1b_kaggle.csv)
 ```
 
 When run, this program trains a few classifiers (namely, `GaussianNB`, `DecisionTreeClassifier`, and `MLPClassifier`, provided by scikit-learn) and checks their performance over a non-overlapping test subset of the data.
+
+One very useful function used by this module is `parameter_combinations`. This function provides a framework for easily comparing different parameterizations of a single model by generating all the different cobinations of the supplied parameters and parameter values. For instance, the following example demonstrates how to get all the different parameterizations of `DecisionTreeClassifier` for the parameters of interest:
+
+
+```python
+from h1b.classify import parameter_combinations
+
+# Dictionary which maps parameter names to list of possible values
+PARAMS = {
+    'criterion': ['gini', 'entropy'],
+    'splitter': ['best', 'random'],
+}
+
+[dict(params) for params in parameter_combinations(PARAMS)]
+```
+
+
+
+
+    [{'criterion': 'gini', 'splitter': 'best'},
+     {'criterion': 'gini', 'splitter': 'random'},
+     {'criterion': 'entropy', 'splitter': 'best'},
+     {'criterion': 'entropy', 'splitter': 'random'}]
+
+
+
+`parameter_combinations` generates a list of lists of key/ value pairs. By transforming each list of key/ value pairs to a `dict`, we show how this can easily be used to configure the initialization of different models (through keyword argument unpacking).

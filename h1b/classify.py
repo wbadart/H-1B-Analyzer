@@ -8,19 +8,27 @@ created: MAR 2018
 '''
 
 import sklearn.metrics as metrics
-# from functools import partial
+
+from itertools import product, repeat
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
-# from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 # from .cluster import cluster_strings
 from .util import load_dataframe, PRIMARY, Timer
 
 MODELS = {
-    'GaussianNB': GaussianNB,
-    'DecisionTreeClassifier': DecisionTreeClassifier,
-    # 'MLPClassifier': partial(MLPClassifier, hidden_layer_sizes=(10,)),
+    'GaussianNB': (GaussianNB, {}),
+
+    'DecisionTreeClassifier': (DecisionTreeClassifier, {
+        'criterion': ('gini', 'entropy'),
+        'splitter': ('best', 'random')}),
+
+    'MLPClassifier': (MLPClassifier, {
+        'hidden_layer_sizes': range(2, 100, 20),
+        'activation': ('relu', 'identity', 'logistic', 'tanh'),
+        'solver': ('adam', 'lbfgs', 'sgm')}),
 }
 
 NB_FEATURES = [
@@ -36,9 +44,21 @@ NB_FEATURES = [
 ]
 
 
+def parameter_combinations(params):
+    '''
+    Framework for generating all possible combinations of model parameters.
+    '''
+    kv_pairs = [
+        [(k, v) for k, v in zip(repeat(param), vals)]
+        for param, vals in params.items()]
+    return product(*kv_pairs)
+
+
 def main():
     from argparse import ArgumentParser
     parser = ArgumentParser(description=__doc__)
+    parser.add_argument('-m', '--models', choices=list(MODELS), default=[],
+                        help='models to run over the data (default:all)')
     parser.add_argument('-f', '--file', default=PRIMARY,
                         help='location of dataset w/in data directory '
                         '(default:{})'.format(PRIMARY))
@@ -51,25 +71,27 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(
         df[NB_FEATURES], df.CASE_STATUS)  # , stratify=df.CASE_STATUS)
 
-    for model_cls in MODELS.values():
-        print('===', getattr(model_cls, '__name__', model_cls), '===')
-        model = model_cls()
+    models = {name: MODELS[name] for name in args.models} or MODELS
+    for model_cls, all_options in models.values():
+        for params in parameter_combinations(all_options):
+            print(getattr(model_cls, '__name__', model_cls), params)
+            model = model_cls(**dict(params))
 
-        with Timer() as t:
-            model.fit(X_train, y_train)
-        print('train time:', t, 's')
+            with Timer() as t:
+                model.fit(X_train, y_train)
+            print('train time:', t, 's')
 
-        with Timer() as t:
-            y_predicted = model.predict(X_test)
-        print('test time: ', t, 's')
+            with Timer() as t:
+                y_predicted = model.predict(X_test)
+            print('test time: ', t, 's')
 
-        print(metrics.confusion_matrix(y_test, y_predicted))
-        print('accuracy: ', metrics.accuracy_score(y_test, y_predicted))
-        print('f1:       ', metrics.f1_score(y_test, y_predicted))
-        print('precision:', metrics.precision_score(y_test, y_predicted))
-        print('recall:   ', metrics.recall_score(y_test, y_predicted))
-        print('auc:      ', metrics.auc(y_test, y_predicted))
-        print()
+            print(metrics.confusion_matrix(y_test, y_predicted))
+            print('accuracy: ', metrics.accuracy_score(y_test, y_predicted))
+            print('f1:       ', metrics.f1_score(y_test, y_predicted))
+            print('precision:', metrics.precision_score(y_test, y_predicted))
+            print('recall:   ', metrics.recall_score(y_test, y_predicted))
+            print('auc:      ', metrics.auc(y_test, y_predicted))
+            print()
 
 
 if __name__ == '__main__':
