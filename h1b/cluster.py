@@ -18,6 +18,7 @@ from nltk.tokenize import word_tokenize
 from sklearn.cluster import AgglomerativeClustering, KMeans, SpectralClustering
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import TruncatedSVD
+from sklearn.pipeline import Pipeline
 
 from .util import datapath, PRIMARY
 
@@ -62,6 +63,13 @@ def cluster_strings(algname, n_clusters, data):
 def wordcount(title_set):
     return Counter(
         w for title in title_set for w in word_tokenize(title) if w.isalpha())
+
+
+def mkpipeline():
+    vec = CountVectorizer(tokenizer=word_tokenize)
+    svd = TruncatedSVD()
+    clust = KMeans(n_clusters=4)
+    return Pipeline([('vectorize', vec), ('svd', svd), ('kmeans', clust)])
 
 
 def main():
