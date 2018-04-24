@@ -57,7 +57,8 @@ def parameter_combinations(params):
 def main():
     from argparse import ArgumentParser
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument('-m', '--models', choices=list(MODELS), default=[],
+    parser.add_argument('-m', '--models', nargs='+', choices=list(MODELS),
+                        default=[],
                         help='models to run over the data (default:all)')
     parser.add_argument('-f', '--file', default=PRIMARY,
                         help='location of dataset w/in data directory '
