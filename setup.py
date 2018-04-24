@@ -29,7 +29,7 @@ setup(name='h1b',
       entry_points={
           'console_scripts': [
               'h1b.cluster = h1b.cluster:main',
-              'h1b.describe = h1b.description2:main',
+              'h1b.describe = h1b.description:main',
               'h1b.classify = h1b.classify:main',
           ],
       })
