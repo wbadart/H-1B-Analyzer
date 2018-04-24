@@ -10,6 +10,7 @@ created: MAR 2018
 import sklearn.metrics as metrics
 
 from itertools import product, repeat
+from pickle import load
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
@@ -35,7 +36,7 @@ NB_FEATURES = [
     # 'EMPLOYER_NAME',
     # 'SOC_NAME',
     # 'JOB_TITLE',
-    # 'JOB_CLUSTER',
+    'JOB_CLUSTER',
     'FULL_TIME_POSITION',
     'PREVAILING_WAGE',
     'YEAR',
@@ -67,7 +68,10 @@ def main():
 
     df = load_dataframe(args.file).dropna()
     df.CASE_STATUS = df.CASE_STATUS == 'CERTIFIED'
-    # df = df.assign(JOB_CLUSTER=cluster_strings('KMeans', 12, df.JOB_TITLE))
+
+    with open('cluster.pickle', 'rb') as fs:
+        clustering = load(fs)
+    df = df.assign(JOB_CLUSTER=clustering.predict(df.JOB_TITLE))
 
     X_train, X_test, y_train, y_test = train_test_split(
         df[NB_FEATURES], df.CASE_STATUS)  # , stratify=df.CASE_STATUS)
