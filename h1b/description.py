@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-h1b/description2.py
+h1b/description.py
 
 Generate descriptive statistics over the primary dataset.
 created: MAR 2018
