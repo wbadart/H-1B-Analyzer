@@ -14,6 +14,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+import pydotplus
+from IPython.display import Image, display
 
 # from .cluster import cluster_strings
 from .util import load_dataframe, PRIMARY, Timer
@@ -72,6 +75,9 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(
         df[NB_FEATURES], df.CASE_STATUS)  # , stratify=df.CASE_STATUS)
 
+    filename = 'Tree1.dot'
+    num_tree = 2
+
     models = {name: MODELS[name] for name in args.models} or MODELS
     for model_cls, all_options in models.values():
         for params in parameter_combinations(all_options):
@@ -85,7 +91,6 @@ def main():
             with Timer() as t:
                 y_predicted = model.predict(X_test)
             print('test time: ', t, 's')
-
             print(metrics.confusion_matrix(y_test, y_predicted))
             print('accuracy: ', metrics.accuracy_score(y_test, y_predicted))
             print('f1:       ', metrics.f1_score(y_test, y_predicted))
@@ -94,6 +99,11 @@ def main():
             print('auc:      ', metrics.auc(y_test, y_predicted))
             print()
 
+            if model_cls.__name__ == 'DecisionTreeClassifier':
+                tree.export_graphviz(model, out_file=filename, max_depth=7, feature_names=NB_FEATURES)
+                filename = 'Tree' + str(num_tree) + '.dot'
+                num_tree += 1
+            
 
 if __name__ == '__main__':
     from sys import exit
