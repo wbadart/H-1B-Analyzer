@@ -87,7 +87,7 @@ def main():
                         help='plot output file (if unset, do not plot, '
                         'just print clusterings)')
     args = parser.parse_args()
-    colors = np.random.random((args.n, 3))
+    colors = np.random.random((args.clusters, 3))
 
     with datapath(args.file).open() as fs:
         data = list(set(
