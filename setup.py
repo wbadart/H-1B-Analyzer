@@ -23,6 +23,7 @@ setup(name='h1b',
           'matplotlib',
           'numpy',
           'pandas',
+          'pydotplus',
           'sklearn',
       ],
 

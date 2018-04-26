@@ -112,10 +112,16 @@ def main():
             print()
 
             if model_cls.__name__ == 'DecisionTreeClassifier':
-                tree.export_graphviz(model, out_file=filename, max_depth=7, feature_names=NB_FEATURES)
+                tree.export_graphviz(
+                    model,
+                    out_file=filename,
+                    class_names=['NOT CERTIFIED', 'CERTIFIED'],
+                    max_depth=3,
+                    feature_names=NB_FEATURES,
+                    filled=True)
                 filename = 'Tree' + str(num_tree) + '.dot'
                 num_tree += 1
-            
+
 
 if __name__ == '__main__':
     from sys import exit
