@@ -77,6 +77,7 @@ def main():
         clustering = load(fs)
     with Timer() as t:
         df = df.assign(JOB_CLUSTER=clustering.predict(df.JOB_TITLE))
+    df.JOB_CLUSTER = df.JOB_CLUSTER.astype('category')
     logging.info('took %s seconds', t)
 
     logging.info('partitioning data...')
