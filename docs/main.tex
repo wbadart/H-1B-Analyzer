@@ -37,6 +37,9 @@
 
 \begin{abstract}
 The paper presents the findings of the H-1B visa program analysis project for CSE-40647/60647.
+The project sought to determine which features of an H-1B application were the strongest predictors
+of that application's certification status\footnote{A {\it certified} visa is valid for further
+processing, while an {\it approved} enables the holder to live and work in the country.}.
 \end{abstract}
 
 \maketitle
@@ -45,71 +48,94 @@ The paper presents the findings of the H-1B visa program analysis project for CS
 \section{Introduction}
 
 The H-1B visa program, enacted by the Immigration and Nationality Act of 1965, opens the door for
-immigrants in specialized professions to migrate to the United States for an extendable term of six
-years. Last year, in 2017, almost 350,000 foreign workers applied for the program, and just under
-200,000 were approved.
+immigrants in specialized professions to migrate to the United States for an extendable term of up to six
+years \cite{FederalRegister}. Last year, in 2017, almost 350,000 foreign workers applied for the program,
+and just under 200,000 were approved \cite{DHS}.
 
-To decide which of the many applicants are awarded one of the limited number of approvals, The US
-Citizenship and Immigration Services (USCIS) conducts an annual lottery.
-The H-1B lottery is a laborious and complex process for both large companies bringing in
-thousands of migrant employees and small ones onboarding only a couple. A tool which
+All H-1B visas are sponsored by the hiring organization (i.e. future employer of the immigrant).
+The organization creates an application for each foreign worker it intends to hire and submits them to
+the Department of Labor for certification.
+Certified applications are subsequently submitted to the annual H-1B lottery, the process which
+determines which of the many certified applications are actually approved \cite{USCIS}.
+
+The H-1B application pipeline is a laborious and complex process for {\em both} large companies bringing
+in thousands of migrant employees and small ones onboarding only a couple. A tool which
 highlights the important features that support H-1B approvals could be a vital strategic asset for
 these companies. Lots of data exists in this domain, but to integrate it and perform meaningful
 analysis is beyond the capabilities of companies without established data science practices.
-We plan to produce a model that shows what features are most valuable in regards to H-1B
-workers’ salaries and approval.
+We plan to produce a model that shows what features are most valuable in regards to H-1B application
+certification.
+
+A related analysis with tangible business value would model worker salaries as a function of other
+application attributes, allowing companies to optimize wages for their H-1B employees against those
+other attributes.
 
 
 \section{Related Work}
 
 In April of 2017, Glassdoor published an article analyzing the salaries of H-1B immigrants and
 comparing them to those of domestic workers in similar roles and fields. While the report does
-not attempt to model H-1B workers’ salaries based on other features, it offers a comprehensive
-statistical analysis of their pay.
-\footnote{\href{https://www.glassdoor.com/research/h1b-workers/}{Glassdoor Comparison on H-1B Visa Salaries vs US Workers}}
+not attempt to model H-1B workers' salaries based on other features, it offers a comprehensive
+statistical analysis of their pay \cite{Glassdoor}.
+
+We were unable to find any prior investigation attempting to model H-1B visa certification
+against public application attributes.
 
 
 \section{Problem Definition}
 
-How can we predict the approval status of a given H-1B via application? What tangential
+How can we predict the approval status of a given H-1B via certification? What tangential
 analyses provide tangible business value for companies sponsoring H-1B visas? How would the salary
 range change based on a given occupation?
 
 
-\section{Proposed Methodology}
+\section{Methodology}
 
-The sheer volume of data available to train our model necessitated that we perform a number of
-initial analyses before constructing the model. For these initial analyses, we chose to
-calculate a number of descriptive statistics over our primary data set\footnote{See 5.1 Datasets} as
-well as a couple visualizations to quickly understand the distributions of key features. We have
-already identified a few outliers in the primary dataset (in particular, in the PREVAILING\_WAGE
-feature) and cleaned our data before producing our initial findings.
+The sheer volume of data available to train our model (over three million records) necessitated
+that we perform a number of initial analyses before constructing the models. For these initial
+analyses, we chose to calculate a number of descriptive statistics over our primary data set\footnote{See
+\ref{subsec:datasets} Datasets} as well as a couple visualizations to quickly understand the
+distributions of key features.
+We have already identified a few outliers in the primary dataset (in particular, in the
+$PREVAILING\_WAGE$ feature) and cleaned our data before producing our initial findings. The
+cleaning process simply drops rows with extreme values.
 
-After the data cleaning and description phase, we began to train our predictive models. Our baseline
-model are Naive Bayes model and Decision Tree model, which attempt to predict the status of an H-1B
-application and the salary range.
+The baseline is a Naive Bayes model which looks at a configurable subset of features to predict
+an unseen application's certification status. This model (as well as all of our more advanced models)
+is trained on 75\% of the available data and tested on the remaining 25\% of records.
 
-We used 5-fold Cross Validation to make sure every data has been used as training and testing. So we
-used the overall accuracy estimate as the average of the accuracies obtained from each iteration.
+For the project, we created an extensible classification framework which allowed us to test
+various models with different parameterizations over the same train/ test partitionings. The other
+models we experimented with were decision trees (both ID3 and CART, each tested with all available
+branching strategies), and a multi-layer perceptron (tested with different hidden-layer sizes,
+activation functions, and solvers)\footnote{See \ref{sec:experiments} Data and Experiments}.
 
-Additionally, we will use our findings from the decision tree construction to create a random forest
-to predict approval status, which we expect to have the best performance. To supplement these
-findings, we will train a regression to model.
+\subsection{Feature Engineering}
 
-If time permits, we're curious to implement a neural network as a classifier, and pit it
-against our best performing model of those described above.
+The primary dataset contains over 200,000 different job titles (i.e. values of the $JOB\_TITLE$
+feature). We anticipated that using this feature in its raw state would hurt decision tree
+performance (at least for ID3) due to its highly branching nature.
 
-While executing this project, we identified another interesting data science task: what meaningful
-groupings of data points can we discover or create to reduce the computation load of processing
-three million or more individual data points on H-1B applications? This question maps naturally to
-the task of clustering. We determined heuristically that JOB\_TITLE would be the most logically
-sound attribute on which to perform the clustering. See the following section for the experiments
-performed in service of this task.
+Therefore, we engineered the $JOB\_CLUSTER$ categorical feature, which has only eight values
+(we created 8 clusters). The raw strings which populated the $JOB\_TITLE$ column were unsuitable
+inputs to any clustering algorithm, so we first used a {\it count vectorization} strategy to
+turn each string into a vector. The length of the vector is equal to the size of the vocabulary
+(the number of unique words from {\it all} job titles); each element corresponds to one word in
+the vocabulary and the value at that index holds the number of times that word occurred in the
+job title (almost always $1$).
+
+Once the set of job titles was tokenized and transformed into a sparse matrix as described above,
+we were able to cluster the job titles with a couple different algorithms and parameterizations.
+We heuristically determined that \texttt{SpectralClustering} with $k = 8$ produced the highest
+quality clustering of job titles. This was the model we used to compute the $JOB\_CLUSTER$ feature.
 
 
 \section{Data and Experiments}
+\label{sec:experiments}
 
 \subsection{Datasets}
+\label{subsec:datasets}
+
 \begin{enumerate}
 \item One of the largest freely available datasets on H-1B applications comes from
 \href{https://kaggle.com}{kaggle.com}. It contains over 3 million records and tracks 10 different features
@@ -296,6 +322,6 @@ Accuracy: 0.881516343609 \qquad Specificity:0.3913522
 
 
 \bibliographystyle{ACM-Reference-Format}
-\bibliography{sample-bibliography}
+\bibliography{main}
 
 \end{document}
