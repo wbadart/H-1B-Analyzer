@@ -1,6 +1,5 @@
 \documentclass[sigconf]{acmart}
 \usepackage{graphicx}
-\usepackage{graphicx}
 \graphicspath{ {images/} }
 
 \usepackage{booktabs} % For formal tables
@@ -137,6 +136,7 @@ quality clustering of job titles. This was the model we used to compute the $JOB
 \label{subsec:datasets}
 
 \begin{enumerate}
+
 \item One of the largest freely available datasets on H-1B applications comes from
 \href{https://kaggle.com}{kaggle.com}. It contains over 3 million records and tracks 10 different features
 per application\footnote{See \href{https://www.kaggle.com/asavla/h1-visa/data}{kaggle.com/asavla/h1-visa/data}}.
@@ -148,68 +148,72 @@ organized by year, spanning from 2001 to 2007\footnote{See
 
 \item OFLC's annual reports also provides a lot of program information and data. Although
 it is not raw data, it disclosures cumulative quarterly and annual releases of program to assist
-with external research and program evaluation\footnote{Please follow
+with external research and program evaluation\footnote{See
 \href{https://www.foreignlaborcert.doleta.gov/pdf/OFLC_Annual_Report_FY2016.pdf}{https://www.foreignlaborcert.doleta.gov/pdf/OFLC\_Annual\_Report\_FY2016.pdf}}.
+
 \end{enumerate}
 
 
 \subsection{Data Summary}
 This subsection presents a preliminary description of dataset (1), the Kaggle dataset described in
-section 5.1 Datasets.
+section \ref{subsec:datasets} Datasets.
 
-Figure 1 shows the salary distribution.There are 5 Outliers in the original data. The average of
-salary is 72,221, the median of salary is 66,602, and the standard deviation is 24,704.
+%% TODO: update this with new description.py output
+Figure \ref{fig:salary} shows the salary distribution. There are 5 outliers in the original data.
+The average of salary is 72,221, the median of salary is 66,602, and the standard deviation is 24,704.
 
-Table 1 shows the frequency of each value of the CASE\_STATUS feature, the column which labels
-whether an application was approved. From the dataset's documentation:
+\begin{figure}[h]
+    \caption{Salary Distribution}
+    \includegraphics[scale=.4]{salary.png}
+    \label{fig:salary}
+\end{figure}
+
+Table \ref{tab:classes} shows the frequency of each value of the $CASE\_STATUS$ feature,
+the column which labels whether an application was certified. From the dataset's documentation:
 
 \begin{quote}
-The CASE\_STATUS field denotes the status of the application after LCA processing. Certified
-    applications are filed with USCIS for H-1B approval. CASE\_STATUS: CERTIFIED does not mean the
-    applicant got his/her H-1B visa approved, it just means that he/she is eligible to file an H-1B.
+The $CASE\_STATUS$ field denotes the status of the application after LCA\footnote{Labor Condition
+Application} processing. Certified applications are filed with USCIS for H-1B approval.
+$CASE\_STATUS = CERTIFIED$ does not mean the applicant got his/her H-1B visa approved, it just
+means that he/she is eligible to file an H-1B.
 \end{quote}
 
-As demonstrated in the following table, our dataset is characterized by pretty heavy class
+As demonstrated in Table \ref{tab:classes}, our dataset is characterized by heavy class
 imbalance. This lead to special considerations in some of our experiments, such as performing
-stratified sampling in the partitioning of testing and trainging subsets.
+stratified sampling in the partitioning of testing and training subsets.
+
+This table also shows that most H-1B applications are certified.
 
 \begin{table}[h]
 	\caption{Approval Status Classes}
     \begin{tabular}{l l}
         Class Name &Frequency \\
         \hline
-        CERTIFIED&914,251 \\
-        NON-CERTIFIED&134,325
-        %GENTABLE
+        CERTIFIED       & 914,251 \\
+        NON-CERTIFIED   & 134,325\\
     \end{tabular}
+    \label{tab:classes}
 \end{table}
 
-Table 1 shows that most H-1B applications are certified (note: this does not mean they are
-accepted). We also chose to examine the change in volume in H-1B applications over time.
+We also chose to examine the change in volume in H-1B applications over time (see Table
+\ref{tab:salary}).
 
 \begin{table}[h]
 	\caption{Salary Classes}
     \begin{tabular}{l l l}
         Class Name&Frequency&Range \\
         \hline
-        Very High& 90,004   & [104042,E99)\\
-        High     & 182,226  & [79331,104042)\\
-        Middle   & 361,845  & [59155,79331)\\
-        Low      & 181,648  & [28963,59155)\\
-        Very Low & 98,528   & [12584,28963)\\
-        %GENTABLE
+        Very High   & 90,004   & [104042,E99)\\
+        High        & 182,226  & [79331,104042)\\
+        Middle      & 361,845  & [59155,79331)\\
+        Low         & 181,648  & [28963,59155)\\
+        Very Low    & 98,528   & [12584,28963)\\
     \end{tabular}
+    \label{tab:salary}
 \end{table}
 
 Table 2 shows the frequency of each value of the WAGE feature. We have five categories and the
 columns show the frequency and salary range of each class.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[scale=.4]{figure1.png}
-  \caption{Salary Distribution}\label{fig:digit}
-\end{figure}
-
 
 \begin{figure}[h]
   \centering
